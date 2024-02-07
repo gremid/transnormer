@@ -1,0 +1,13 @@
+.dir-locals.el
+
+.cpcache/
+classes/
+.nrepl-port
+
+.python-version
+model/
+
+/src/public/styles.css
+/transnormer.jar
+
+*.temp
