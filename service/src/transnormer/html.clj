@@ -93,16 +93,13 @@
      [:table
       [:tr
        [:th "Input"]
-       [:th "Transnormer"]
-       [:th "CAB"]]
-      (for [[input transnormer cab] alignment]
+       [:th "Transnormer"]]
+      (for [[input transnormer] alignment]
         [:tr {:class (cond
-                       (= input transnormer cab) "identical"
-                       (= transnormer cab)       "match"
-                       :else                     "normalized")}
+                       (= input transnormer) "identical"
+                       :else                 "normalized")}
          [:td input]
-         [:td transnormer]
-         [:td cab]])])))
+         [:td transnormer]])])))
 
 (defstyled request-dump :pre
   :mt-6 :p-4 :text-sm :text-gray-500 :border-1 :border-gray-200

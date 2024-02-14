@@ -1,9 +1,5 @@
 (ns transnormer.process
   (:require
-   [gremid.xml :as gx]
-   [hato.client :as hc]
-   [taoensso.timbre :as log]
-   [clojure.java.io :as io]
    [transnormer.model :as model]
    [transnormer.collate :as collate]
    [clojure.string :as str])
@@ -58,39 +54,6 @@
      (assoc-space-after)
      (vec))))
 
-(defn sentences->xml-tok-wrap
-  [sentences]
-  (->> [:text (for [s sentences] [:s (for [w s] [:w {:t (:text w)}])])]
-       (gx/sexp->node)
-       (gx/node->events)
-       (gx/write-events *out*)
-       (with-out-str)))
-
-(defn parse-xml-tok-wrap
-  [sentences node]
-  (for [[s s*] (map list sentences (gx/elements :s node))]
-    (for [[w w*] (map list s (gx/elements :w s*))]
-      (assoc w :text (gx/attr :word (gx/element :moot w*))))))
-
-(defn read-xml
-  [input]
-  (with-open [input (io/input-stream input)]
-    (-> input gx/read-events gx/events->node)))
-
-(def url
-  "https://www.deutschestextarchiv.de/public/cab/query")
-
-(defn cab-analyze
-  [sentences]
-  (when (seq sentences)
-    (let [xml (sentences->xml-tok-wrap sentences)
-          req {:url         url
-               :method      :post
-               :as          :stream
-               :form-params {"fmt" "ftwxml"
-                             "qd"  xml}}]
-      (->> (hc/request req) :body read-xml (parse-xml-tok-wrap sentences)))))
-
 (def sentences->texts-xf
   (comp (mapcat identity)
         (map (fn [{:keys [text space-after?]}]
@@ -106,11 +69,9 @@
 (defn align-normalizations
   [s]
   (let [tokenized  (tokenize s)
-        cab-result (cab-analyze tokenized)
         result     (tokenize (first (model/generate [s])))
         result     [(into [] sentences->texts-xf tokenized)
-                    (into [] sentences->texts-xf result)
-                    (into [] sentences->texts-xf cab-result)]]
+                    (into [] sentences->texts-xf result)]]
     (->> (collate/align-tokens result)
          (partition-by match?)
          (map alignment->strs)
