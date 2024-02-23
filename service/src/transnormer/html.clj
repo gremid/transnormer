@@ -43,13 +43,14 @@
      "Alle Rechte vorbehalten. Nur für die projektinterne Nutzung."]]))
 
 (defstyled page :html
-  :h-full :text-ul-basalt :font-sans
-  [:body :h-full :font-sans]
+  :h-full :text-ul-basalt :font-junicode
+  [:body :h-full :font-junicode]
   ([page-title & contents]
    [:<> {:lang "de"}
     [:head
      [:meta {:charset "UTF-8"}]
      [:meta {:name "viewport", :content "width=device-width, initial-scale=1.0"}]
+     [:link {:rel "stylesheet" :href (str cp "assets/fonts.css")}]
      [:link {:rel "stylesheet" :href (str cp "assets/styles.css")}]
      [:title (str page-title " – " title)]]
     [:body
@@ -58,15 +59,14 @@
      [footer]]]))
 
 (def sample-input
-  (str "Bey dieser Gelegenheit macht er nun von den alten Germaniern folgende "
-       "Beschreibung, die wir unsern Lesern zu Gefallen, in einer getreuen "
-       "Übersetzung grossen Theils abschreiben wollen."))
+  (str "Es iſt nicht wahr, daß Speculationen uͤber dieſe Dinge jemals Unheil "
+       "geſtiftet, und der buͤrgerlichen Geſellſchaft nachtheilig geworden."))
 
 (defstyled query-form :form
   :bg-slate-200 :w-full :p-4
   [:.controls :max-w-5xl :mx-auto :px-4 :sm:px-6 :lg:px-8
    [:label :block :text-sm :font-medium :leading-6 :text-slate-900]
-   [:textarea :block :w-full :mt-2 :p-2
+   [:textarea :block :w-full :mt-2 :p-2 :text-xl
     :text-slate-900 :placeholder:text-slate-400]
    [:button :mt-2 :p-2 :font-semibold :text-white :bg-red-700]]
   ([req q]
@@ -77,13 +77,14 @@
                  :id          "q"
                  :placeholder "Text to normalize…"
                  :rows        "4"
+                 :spellcheck  "false"
                  :onfocus     "this.select();"
                  :autofocus   ""} (or q sample-input)]
      [:button {:type "submit"} "Normalize"]]]))
 
 (defstyled query-results :section
   :mt-6 :w-full :p-8
-  [:table :w-full :max-w-5xl :mx-auto :px-4 :sm:px-6 :lg:px-8 :border-1 :border-slate-200
+  [:table :w-full :max-w-5xl :mx-auto :px-4 :sm:px-6 :lg:px-8 :border-1 :border-slate-200 :text-xl
    [:tr.match :bg-lime-300]
    [:tr.normalized :bg-amber-300]
    [:th :p-2 :bg-slate-200]
@@ -114,6 +115,7 @@
    #_[request-dump req]])
 
 (o/set-tokens! {:tw-version 3
+                :fonts      {:junicode "Junicode"}
                 :colors     {:ul-basalt     "262a31"
                              :ul-garnet     "b02f2c"
                              :ul-carnelian  "d8413e"
