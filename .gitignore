@@ -88,6 +88,9 @@ data/*
 # Mypy cache
 .mypy_cache/
 
+# pyenv
+.python-version
+
 # Dir to dump temporary stuff
 temp/
 
